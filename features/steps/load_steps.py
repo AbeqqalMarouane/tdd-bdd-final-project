@@ -55,5 +55,5 @@ def step_impl(context):
             "category": row['category']
         }
         context.resp = requests.post(rest_endpoint, json=payload)
-        assert context.resp.status_code == HTTP_201_CREATEDADD YOUR CODE HERE TO CREATE PRODUCTS VIA THE REST API
-        
+        assert context.resp.status_code == HTTP_201_CREATED  # Ensure this line is indented properly
+ 

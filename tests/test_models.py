@@ -220,5 +220,3 @@ class TestProductModel(unittest.TestCase):
         products_at_29_99 = Product.find_by_price(Decimal('29.99')).all()  # Execute the query with .all()
         self.assertEqual(len(products_at_29_99), 1)
         self.assertEqual(products_at_29_99[0].price, Decimal('29.99'))
-
-    

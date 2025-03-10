@@ -20,7 +20,6 @@ Product Store Service with UI
 """
 from flask import jsonify, request, abort
 from flask import url_for  # noqa: F401 pylint: disable=unused-import
-from service.models import Product
 from service.common import status  # HTTP Status Codes
 from . import app
 from service.models import Product, Category
@@ -91,13 +90,12 @@ def create_products():
     # Uncomment this line of code once you implement READ A PRODUCT
     #
     location_url = url_for("get_products", product_id=product.id, _external=True)
-    #location_url = "/"  # delete once READ is implemented
     return jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
-
 
 ######################################################################
 # L I S T   A L L   P R O D U C T S
 ######################################################################
+
 
 @app.route("/products", methods=["GET"])
 def list_products():
@@ -134,6 +132,7 @@ def list_products():
 # R E A D   A   P R O D U C T
 ######################################################################
 
+
 @app.route("/products/<int:product_id>", methods=["GET"])
 def get_products(product_id):
     """
@@ -154,6 +153,7 @@ def get_products(product_id):
 #
 # PLACE YOUR CODE TO UPDATE A PRODUCT HERE
 #
+
 
 @app.route("/products/<int:product_id>", methods=["PUT"])
 def update_products(product_id):
@@ -191,4 +191,3 @@ def delete_products(product_id):
 ######################################################################
 # LIST PRODUCTS
 ######################################################################
-
