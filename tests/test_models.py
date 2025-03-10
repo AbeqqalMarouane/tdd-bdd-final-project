@@ -30,6 +30,7 @@ from decimal import Decimal
 from service.models import Product, Category, db
 from service import app
 from tests.factories import ProductFactory
+from service.models import DataValidationError
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/postgres"
@@ -137,6 +138,13 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(products[0].id, original_id)
         self.assertEqual(products[0].description, "testing")
 
+    def test_update_a_product_with_no_id(self):
+        """It should raise a DataValidationError when updating a product with no ID"""
+        product = ProductFactory()
+        product.id = None  # Simulate no ID (invalid state)
+        with self.assertRaises(DataValidationError):
+            product.update()
+
     def test_delete_a_product(self):
         """It should Delete a Product"""
         product = ProductFactory()
@@ -193,3 +201,24 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(found.count(), count)
         for product in found:
             self.assertEqual(product.category, category)
+
+    def test_find_by_price(self):
+        """It should return all products with the given price"""
+        # Create some products with different prices
+        product1 = ProductFactory(price=Decimal('19.99'))
+        product2 = ProductFactory(price=Decimal('19.99'))
+        product3 = ProductFactory(price=Decimal('29.99'))
+        db.session.add_all([product1, product2, product3])
+        db.session.commit()
+        # Call the method with a price to find
+        products_at_19_99 = Product.find_by_price(Decimal('19.99')).all()  # Execute the query with .all()
+        # Verify that we get the correct products
+        self.assertEqual(len(products_at_19_99), 2)
+        self.assertEqual(products_at_19_99[0].price, Decimal('19.99'))
+        self.assertEqual(products_at_19_99[1].price, Decimal('19.99'))
+        # Verify that products with other prices are not returned
+        products_at_29_99 = Product.find_by_price(Decimal('29.99')).all()  # Execute the query with .all()
+        self.assertEqual(len(products_at_29_99), 1)
+        self.assertEqual(products_at_29_99[0].price, Decimal('29.99'))
+
+    
